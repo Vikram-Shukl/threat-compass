@@ -7,6 +7,7 @@ import { ThreatFeed } from "@/components/ThreatFeed";
 import { MitreGrid } from "@/components/MitreGrid";
 import { AnalyticsCharts } from "@/components/AnalyticsCharts";
 import { CveSeverityChart } from "@/components/CveSeverityChart";
+import { MitreDetectionChart } from "@/components/MitreDetectionChart";
 
 const Index = () => {
   return (
@@ -49,7 +50,10 @@ const Index = () => {
             </div>
 
             {/* MITRE ATT&CK */}
-            <MitreGrid />
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <MitreGrid />
+              <MitreDetectionChart />
+            </div>
 
             {/* CVE Severity Distribution */}
             <CveSeverityChart />
