@@ -13,17 +13,22 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    console.log("Proxying ThreatFox request:", JSON.stringify(body));
+    const authKey = Deno.env.get("THREATFOX_AUTH_KEY");
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (authKey) {
+      headers["Auth-Key"] = authKey;
+    }
 
     const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
     });
 
-    console.log("ThreatFox response status:", res.status);
     const data = await res.text();
-    console.log("ThreatFox response length:", data.length);
 
     return new Response(data, {
       status: 200,
@@ -33,7 +38,6 @@ serve(async (req) => {
       },
     });
   } catch (error) {
-    console.error("Proxy error:", error.message);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
