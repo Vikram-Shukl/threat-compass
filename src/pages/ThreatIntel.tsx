@@ -58,7 +58,7 @@ function mapIocType(raw: string): string {
     sha256_hash: "Malware Hash",
     sha1_hash: "Malware Hash",
   };
-  return map[raw.toLowerCase()] ?? raw || "Unknown";
+  return map[raw.toLowerCase()] ?? (raw || "Unknown");
 }
 
 const typeIcon: Record<string, typeof Globe> = {
