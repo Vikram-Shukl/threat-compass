@@ -2,6 +2,7 @@ import {
   Shield, LayoutDashboard, Bug, Rss, Target, BarChart3, Settings, Bell, ShieldAlert, Users, Globe, TrendingUp, Clock
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
+import { useAlerts } from "@/stores/alertStore";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
@@ -25,6 +26,16 @@ const secondaryItems = [
   { title: "Alerts", url: "/alerts", icon: Bell },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
+
+function AlertBadge() {
+  const { unreadCount } = useAlerts();
+  if (unreadCount === 0) return null;
+  return (
+    <span className="ml-auto font-mono text-[10px] bg-destructive text-destructive-foreground px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+      {unreadCount}
+    </span>
+  );
+}
 
 export function DashboardSidebar() {
   const { state } = useSidebar();
@@ -73,20 +84,24 @@ export function DashboardSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {secondaryItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className="hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
-                      activeClassName="bg-primary/10 text-primary"
-                    >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span className="font-mono text-sm">{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {secondaryItems.map((item) => {
+                const isAlerts = item.title === "Alerts";
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        className="hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+                        activeClassName="bg-primary/10 text-primary"
+                      >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {!collapsed && <span className="font-mono text-sm">{item.title}</span>}
+                        {isAlerts && !collapsed && <AlertBadge />}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
