@@ -41,13 +41,7 @@ async function fetchThreatGeoData(): Promise<{
   total: number;
 }> {
   // 1. Get IPs from ThreatFox
-  const tfRes = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: "get_iocs", days: 7 }),
-  });
-  if (!tfRes.ok) throw new Error("Failed to fetch threat data");
-  const tfData = await tfRes.json();
+  const tfData = await fetchThreatFox({ query: "get_iocs", days: 7 });
 
   if (tfData.query_status !== "ok" || !tfData.data) {
     return { markers: [], byCountry: [], total: 0 };
