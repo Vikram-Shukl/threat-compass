@@ -84,5 +84,5 @@ export function useCveAlertPoller() {
       }
       hasNotified.current = true;
     }
-  }, [data, addAlerts]);
+  }, [data]);
 }

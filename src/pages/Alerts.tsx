@@ -29,7 +29,7 @@ export default function Alerts() {
       return true;
     });
 
-  const unread = unreadCount();
+  const unread = unreadCount;
 
   return (
     <SidebarProvider>
