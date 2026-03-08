@@ -1,5 +1,5 @@
 import {
-  Shield, LayoutDashboard, Bug, Rss, Target, BarChart3, Settings, Bell, ShieldAlert, Users, Globe
+  Shield, LayoutDashboard, Bug, Rss, Target, BarChart3, Settings, Bell, ShieldAlert, Users, Globe, TrendingUp
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -16,6 +16,7 @@ const mainItems = [
   { title: "MITRE ATT&CK", url: "/mitre", icon: Target },
   { title: "Threat Actors", url: "/actors", icon: Users },
   { title: "Threat Map", url: "/map", icon: Globe },
+  { title: "Risk Scoring", url: "/risk", icon: TrendingUp },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
 ];
 
