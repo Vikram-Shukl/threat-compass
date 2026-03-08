@@ -1,1 +1,4 @@
 project_id = "ddskbvtdmyxahxzgdfvo"
+
+[functions.threatfox-proxy]
+verify_jwt = false
