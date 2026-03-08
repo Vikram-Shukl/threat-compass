@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 import { Shield, Search, ChevronLeft, ChevronRight, Globe, Hash, Server } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
