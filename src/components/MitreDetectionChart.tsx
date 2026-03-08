@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 
 interface TechniqueCount {
   name: string;
