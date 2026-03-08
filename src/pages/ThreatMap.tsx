@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 import {
   ComposableMap,
   Geographies,
