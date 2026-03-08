@@ -14,6 +14,7 @@ import ThreatMap from "./pages/ThreatMap";
 import RiskScoring from "./pages/RiskScoring";
 import AttackTimeline from "./pages/AttackTimeline";
 import Alerts from "./pages/Alerts";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ function AppRoutes() {
       <Route path="/risk" element={<RiskScoring />} />
       <Route path="/timeline" element={<AttackTimeline />} />
       <Route path="/alerts" element={<Alerts />} />
+      <Route path="/analytics" element={<Analytics />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
