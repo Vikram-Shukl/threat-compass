@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useAlertStore, CveAlert } from "@/stores/alertStore";
+import { alertActions, type CveAlert } from "@/stores/alertStore";
 
 const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const CRITICAL_THRESHOLD = 9.0;
@@ -49,7 +49,6 @@ async function fetchRecentCriticalCves() {
 }
 
 export function useCveAlertPoller() {
-  const addAlerts = useAlertStore((s) => s.addAlerts);
   const hasNotified = useRef(false);
 
   const { data } = useQuery({
@@ -62,11 +61,11 @@ export function useCveAlertPoller() {
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    const seenIds = useAlertStore.getState().seenIds;
+    const seenIds = alertActions.getSeenIds();
     const newAlerts = data.filter((a) => !seenIds.has(a.cveId));
 
     if (newAlerts.length > 0) {
-      addAlerts(newAlerts);
+      alertActions.addAlerts(newAlerts);
 
       // Show toast notifications for critical ones
       const criticals = newAlerts.filter((a) => a.severity === "CRITICAL");

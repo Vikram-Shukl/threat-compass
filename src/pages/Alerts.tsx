@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Shield, Bell, BellOff, CheckCheck, Trash2, AlertTriangle, ExternalLink } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { useAlertStore } from "@/stores/alertStore";
+import { useAlerts } from "@/stores/alertStore";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -18,7 +18,7 @@ const sevBadge: Record<string, string> = {
 };
 
 export default function Alerts() {
-  const { alerts, markRead, markAllRead, dismiss, clearAll, unreadCount } = useAlertStore();
+  const { alerts, markRead, markAllRead, dismiss, clearAll, unreadCount } = useAlerts();
   const [filter, setFilter] = useState<"all" | "unread" | "CRITICAL" | "HIGH">("all");
 
   const filtered = alerts
