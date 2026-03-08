@@ -12,6 +12,7 @@ import ThreatActors from "./pages/ThreatActors";
 import ThreatMap from "./pages/ThreatMap";
 import RiskScoring from "./pages/RiskScoring";
 import AttackTimeline from "./pages/AttackTimeline";
+import Alerts from "./pages/Alerts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/map" element={<ThreatMap />} />
           <Route path="/risk" element={<RiskScoring />} />
           <Route path="/timeline" element={<AttackTimeline />} />
+          <Route path="/alerts" element={<Alerts />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
