@@ -48,17 +48,16 @@ async function fetchTopExploitedVulns(): Promise<VulnEntry[]> {
     const m = cve.metrics ?? {};
     const cvss = m.cvssMetricV31?.[0]?.cvssData ?? m.cvssMetricV30?.[0]?.cvssData;
     const score = cvss?.baseScore ?? 0;
-    if (score < 7) continue;
+    if (score < 4) continue;
     const desc = (cve.descriptions?.find((d: any) => d.lang === "en")?.value ?? "").toLowerCase();
-    const exploitSignals = ["exploit", "remote code", "rce", "in the wild", "actively", "zero-day", "arbitrary code"];
+    const exploitSignals = ["exploit", "remote code", "rce", "in the wild", "actively", "zero-day", "arbitrary code", "execute", "overflow", "injection", "privilege", "bypass", "unauthenticated", "root"];
     const exploitHits = exploitSignals.filter((s) => desc.includes(s)).length;
-    if (exploitHits === 0 && score < 9) continue;
     const shortDesc = cve.descriptions?.find((d: any) => d.lang === "en")?.value ?? cve.id;
     entries.push({
       id: cve.id,
       name: shortDesc.length > 50 ? shortDesc.slice(0, 50) + "…" : shortDesc,
       score,
-      count: Math.round(score * 10 + exploitHits * 15),
+      count: Math.round(score * 10 + exploitHits * 12),
     });
   }
   return entries.sort((a, b) => b.count - a.count).slice(0, 10);
