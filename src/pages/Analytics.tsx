@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 import {
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid, RadarChart, Radar, PolarGrid,
@@ -64,13 +65,7 @@ async function fetchTopExploitedVulns(): Promise<VulnEntry[]> {
 }
 
 async function fetchTargetedIndustries(): Promise<IndustryEntry[]> {
-  const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: "get_iocs", days: 7 }),
-  });
-  if (!res.ok) throw new Error("ThreatFox failed");
-  const data = await res.json();
+  const data = await fetchThreatFox({ query: "get_iocs", days: 7 });
   if (data.query_status !== "ok" || !data.data) return [];
   const industryMap: Record<string, string[]> = {
     "Financial Services": ["banking", "finance", "payment", "credit", "bank", "swift"],
@@ -104,13 +99,7 @@ async function fetchTargetedIndustries(): Promise<IndustryEntry[]> {
 }
 
 async function fetchAttackTechniques(): Promise<TechniqueEntry[]> {
-  const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: "get_iocs", days: 7 }),
-  });
-  if (!res.ok) throw new Error("ThreatFox failed");
-  const data = await res.json();
+  const data = await fetchThreatFox({ query: "get_iocs", days: 7 });
   if (data.query_status !== "ok" || !data.data) return [];
   const techniqueMap: Record<string, { id: string; name: string }> = {
     botnet: { id: "T1583", name: "Acquire Infrastructure" },

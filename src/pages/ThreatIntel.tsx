@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 import { Shield, Search, ChevronLeft, ChevronRight, Globe, Hash, Server } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
@@ -26,13 +27,7 @@ interface ThreatIndicator {
 const PAGE_SIZE = 20;
 
 async function fetchThreatIntel(): Promise<ThreatIndicator[]> {
-  const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: "get_iocs", days: 7 }),
-  });
-  if (!res.ok) throw new Error("Failed to fetch threat intel");
-  const data = await res.json();
+  const data = await fetchThreatFox({ query: "get_iocs", days: 7 });
 
   if (data.query_status !== "ok" || !data.data) {
     return [];

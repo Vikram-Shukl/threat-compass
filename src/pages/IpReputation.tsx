@@ -6,6 +6,7 @@ import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 
 const ipSchema = z
   .string()
@@ -30,14 +31,7 @@ interface ReputationResult {
 }
 
 async function checkIpReputation(ip: string): Promise<ReputationResult> {
-  // Search ThreatFox for the IP
-  const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: "search_ioc", search_term: ip }),
-  });
-  if (!res.ok) throw new Error("Failed to query threat database");
-  const data = await res.json();
+  const data = await fetchThreatFox({ query: "search_ioc", search_term: ip });
 
   const iocs = data.data ?? [];
   const found = Array.isArray(iocs) && iocs.length > 0;
