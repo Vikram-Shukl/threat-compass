@@ -27,7 +27,16 @@ const secondaryItems = [
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-export function DashboardSidebar() {
+function AlertBadge() {
+  const { unreadCount } = useAlerts();
+  if (unreadCount === 0) return null;
+  return (
+    <span className="ml-auto font-mono text-[10px] bg-destructive text-destructive-foreground px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+      {unreadCount}
+    </span>
+  );
+}
+
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
