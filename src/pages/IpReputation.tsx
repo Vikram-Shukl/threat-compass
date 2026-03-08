@@ -6,6 +6,7 @@ import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 
 const ipSchema = z
   .string()
