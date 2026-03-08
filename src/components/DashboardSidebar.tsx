@@ -37,6 +37,7 @@ function AlertBadge() {
   );
 }
 
+export function DashboardSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
