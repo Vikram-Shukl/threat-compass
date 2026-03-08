@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { fetchThreatFox } from "@/lib/threatfoxApi";
 import {
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid, RadarChart, Radar, PolarGrid,
