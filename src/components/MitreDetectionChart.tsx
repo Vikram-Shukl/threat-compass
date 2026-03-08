@@ -33,13 +33,7 @@ const tooltipStyle = {
 };
 
 async function fetchTopTechniques(): Promise<TechniqueCount[]> {
-  const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query: "get_iocs", days: 7 }),
-  });
-  if (!res.ok) throw new Error("Failed to fetch threat data");
-  const data = await res.json();
+  const data = await fetchThreatFox({ query: "get_iocs", days: 7 });
 
   if (data.query_status !== "ok" || !data.data) return [];
 
