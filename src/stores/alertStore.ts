@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { useCallback, useSyncExternalStore } from "react";
 
 export interface CveAlert {
   id: string;
@@ -13,18 +13,15 @@ export interface CveAlert {
   dismissed: boolean;
 }
 
-interface AlertStore {
-  alerts: CveAlert[];
-  seenIds: Set<string>;
-  addAlerts: (alerts: CveAlert[]) => void;
-  markRead: (id: string) => void;
-  markAllRead: () => void;
-  dismiss: (id: string) => void;
-  clearAll: () => void;
-  unreadCount: () => number;
+// Simple store without zustand
+let alerts: CveAlert[] = [];
+let seenIds = new Set<string>();
+const listeners = new Set<() => void>();
+
+function notify() {
+  for (const l of listeners) l();
 }
 
-// Load persisted alerts from localStorage
 function loadAlerts(): CveAlert[] {
   try {
     const raw = localStorage.getItem("sentinel-cve-alerts");
@@ -37,63 +34,66 @@ function loadAlerts(): CveAlert[] {
 function loadSeenIds(): Set<string> {
   try {
     const raw = localStorage.getItem("sentinel-seen-cve-ids");
-    return raw ? new Set(JSON.parse(raw)) : new Set();
+    return raw ? new Set<string>(JSON.parse(raw)) : new Set<string>();
   } catch {
-    return new Set();
+    return new Set<string>();
   }
 }
 
-function persist(alerts: CveAlert[], seenIds: Set<string>) {
+function persist() {
   localStorage.setItem("sentinel-cve-alerts", JSON.stringify(alerts.slice(0, 100)));
   localStorage.setItem("sentinel-seen-cve-ids", JSON.stringify([...seenIds].slice(-500)));
 }
 
-export const useAlertStore = create<AlertStore>((set, get) => ({
-  alerts: loadAlerts(),
-  seenIds: loadSeenIds(),
+// Initialize
+alerts = loadAlerts();
+seenIds = loadSeenIds();
 
-  addAlerts: (newAlerts) =>
-    set((state) => {
-      const seenIds = new Set(state.seenIds);
-      const toAdd = newAlerts.filter((a) => !seenIds.has(a.cveId));
-      if (toAdd.length === 0) return state;
+export const alertActions = {
+  addAlerts(newAlerts: CveAlert[]) {
+    const toAdd = newAlerts.filter((a) => !seenIds.has(a.cveId));
+    if (toAdd.length === 0) return;
+    for (const a of toAdd) seenIds.add(a.cveId);
+    alerts = [...toAdd, ...alerts].slice(0, 100);
+    persist();
+    notify();
+  },
+  markRead(id: string) {
+    alerts = alerts.map((a) => (a.id === id ? { ...a, read: true } : a));
+    persist();
+    notify();
+  },
+  markAllRead() {
+    alerts = alerts.map((a) => ({ ...a, read: true }));
+    persist();
+    notify();
+  },
+  dismiss(id: string) {
+    alerts = alerts.map((a) => (a.id === id ? { ...a, dismissed: true } : a));
+    persist();
+    notify();
+  },
+  clearAll() {
+    alerts = [];
+    persist();
+    notify();
+  },
+  getSeenIds() {
+    return seenIds;
+  },
+};
 
-      for (const a of toAdd) seenIds.add(a.cveId);
-      const alerts = [...toAdd, ...state.alerts].slice(0, 100);
-      persist(alerts, seenIds);
-      return { alerts, seenIds };
-    }),
+function subscribe(cb: () => void) {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
 
-  markRead: (id) =>
-    set((state) => {
-      const alerts = state.alerts.map((a) =>
-        a.id === id ? { ...a, read: true } : a
-      );
-      persist(alerts, state.seenIds);
-      return { alerts };
-    }),
+function getSnapshot() {
+  return alerts;
+}
 
-  markAllRead: () =>
-    set((state) => {
-      const alerts = state.alerts.map((a) => ({ ...a, read: true }));
-      persist(alerts, state.seenIds);
-      return { alerts };
-    }),
-
-  dismiss: (id) =>
-    set((state) => {
-      const alerts = state.alerts.map((a) =>
-        a.id === id ? { ...a, dismissed: true } : a
-      );
-      persist(alerts, state.seenIds);
-      return { alerts };
-    }),
-
-  clearAll: () =>
-    set((state) => {
-      persist([], state.seenIds);
-      return { alerts: [] };
-    }),
-
-  unreadCount: () => get().alerts.filter((a) => !a.read && !a.dismissed).length,
-}));
+export function useAlerts() {
+  const data = useSyncExternalStore(subscribe, getSnapshot);
+  const unreadCount = data.filter((a) => !a.read && !a.dismissed).length;
+  return { alerts: data, unreadCount, ...alertActions };
+}
