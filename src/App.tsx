@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import CveExplorer from "./pages/CveExplorer";
 import ThreatIntel from "./pages/ThreatIntel";
 import IpReputation from "./pages/IpReputation";
+import MitreExplorer from "./pages/MitreExplorer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/cves" element={<CveExplorer />} />
           <Route path="/threats" element={<ThreatIntel />} />
           <Route path="/ip-reputation" element={<IpReputation />} />
+          <Route path="/mitre" element={<MitreExplorer />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
