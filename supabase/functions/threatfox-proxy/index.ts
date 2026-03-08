@@ -13,6 +13,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
+    console.log("Proxying ThreatFox request:", JSON.stringify(body));
 
     const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
       method: "POST",
@@ -20,16 +21,19 @@ serve(async (req) => {
       body: JSON.stringify(body),
     });
 
+    console.log("ThreatFox response status:", res.status);
     const data = await res.text();
+    console.log("ThreatFox response length:", data.length);
 
     return new Response(data, {
-      status: res.status,
+      status: 200,
       headers: {
         ...corsHeaders,
         "Content-Type": "application/json",
       },
     });
   } catch (error) {
+    console.error("Proxy error:", error.message);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
