@@ -64,7 +64,8 @@ export function CveSeverityChart() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["nvd-severity-distribution"],
     queryFn: fetchSeverityDistribution,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   return (

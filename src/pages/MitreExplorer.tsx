@@ -115,7 +115,8 @@ export default function MitreExplorer() {
   const { data: techniques, isLoading, isError } = useQuery({
     queryKey: ["mitre-techniques"],
     queryFn: fetchMitreTechniques,
-    staleTime: 30 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   const grouped = useMemo(() => {

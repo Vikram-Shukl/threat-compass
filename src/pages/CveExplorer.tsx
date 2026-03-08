@@ -104,7 +104,8 @@ export default function CveExplorer() {
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ["cve-explorer", submittedSearch, startIndex],
     queryFn: () => fetchCves({ keyword: submittedSearch, startIndex }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
     placeholderData: (prev) => prev,
   });
 

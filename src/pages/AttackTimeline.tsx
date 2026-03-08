@@ -92,7 +92,8 @@ export default function AttackTimeline() {
   const { data: events, isLoading, isError } = useQuery({
     queryKey: ["attack-timeline"],
     queryFn: fetchTimelineData,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   // Group by month

@@ -98,7 +98,8 @@ export function MitreDetectionChart() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["mitre-detection-chart"],
     queryFn: fetchTopTechniques,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   return (
