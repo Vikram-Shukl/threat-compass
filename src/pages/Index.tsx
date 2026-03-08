@@ -6,6 +6,7 @@ import { CveTable } from "@/components/CveTable";
 import { ThreatFeed } from "@/components/ThreatFeed";
 import { MitreGrid } from "@/components/MitreGrid";
 import { AnalyticsCharts } from "@/components/AnalyticsCharts";
+import { CveSeverityChart } from "@/components/CveSeverityChart";
 
 const Index = () => {
   return (
@@ -49,6 +50,9 @@ const Index = () => {
 
             {/* MITRE ATT&CK */}
             <MitreGrid />
+
+            {/* CVE Severity Distribution */}
+            <CveSeverityChart />
 
             {/* Analytics */}
             <AnalyticsCharts />
