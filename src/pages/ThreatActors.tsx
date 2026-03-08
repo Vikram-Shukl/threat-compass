@@ -258,7 +258,8 @@ export default function ThreatActors() {
   const { data: actors, isLoading, isError } = useQuery({
     queryKey: ["threat-actors"],
     queryFn: fetchThreatActors,
-    staleTime: 30 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   const filtered = useMemo(() => {

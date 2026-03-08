@@ -54,7 +54,8 @@ export function CveTable() {
   const { data: cves, isLoading, isError } = useQuery({
     queryKey: ["nvd-cves"],
     queryFn: fetchCves,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   return (

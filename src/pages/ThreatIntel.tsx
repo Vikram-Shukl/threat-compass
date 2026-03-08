@@ -81,7 +81,8 @@ export default function ThreatIntel() {
   const { data: allIndicators, isLoading, isError } = useQuery({
     queryKey: ["threat-intel-feed"],
     queryFn: fetchThreatIntel,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 12 * 60 * 60 * 1000,
+    refetchInterval: 12 * 60 * 60 * 1000,
   });
 
   const filtered = (allIndicators ?? []).filter((ind) => {
