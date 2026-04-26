@@ -124,8 +124,9 @@ export default function ThreatMap() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["threat-geo-map"],
     queryFn: fetchThreatGeoData,
-    staleTime: 12 * 60 * 60 * 1000,
+    staleTime: 0,
     refetchInterval: 12 * 60 * 60 * 1000,
+    refetchOnMount: true,
   });
 
   const countryCodeSet = useMemo(() => {
