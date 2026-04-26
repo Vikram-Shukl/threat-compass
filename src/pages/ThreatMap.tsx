@@ -68,7 +68,7 @@ async function fetchThreatGeoData(): Promise<{
 
   for (const batch of batches) {
     try {
-      const geoRes = await fetch("http://ip-api.com/batch?fields=query,lat,lon,country,countryCode,status", {
+      const geoRes = await fetch("https://ip-api.com/batch?fields=query,lat,lon,country,countryCode,status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(batch.map((ip) => ({ query: ip }))),
