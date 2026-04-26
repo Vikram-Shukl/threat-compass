@@ -56,40 +56,32 @@ async function fetchThreatGeoData(): Promise<{
     if (match) ipSet.add(match[1]);
   }
 
-  const ips = Array.from(ipSet).slice(0, 80); // Limit for free API
+  const ips = Array.from(ipSet).slice(0, 15); // Free tier: 45 req/min
   if (ips.length === 0) return { markers: [], byCountry: [], total: 0 };
 
-  // 2. Batch geolocate via ip-api.com (free, 15 per batch for CORS-free)
+  // 2. Geolocate via ip-api.com free single endpoint with 100ms delay
   const markers: GeoIp[] = [];
-  const batches = [];
-  for (let i = 0; i < ips.length; i += 100) {
-    batches.push(ips.slice(i, i + 100));
-  }
-
-  for (const batch of batches) {
+  for (const ip of ips) {
     try {
-      const geoRes = await fetch("https://ip-api.com/batch?fields=query,lat,lon,country,countryCode,status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(batch.map((ip) => ({ query: ip }))),
-      });
+      const geoRes = await fetch(
+        `https://ip-api.com/json/${ip}?fields=query,lat,lon,country,countryCode,status`
+      );
       if (geoRes.ok) {
-        const results = await geoRes.json();
-        for (const r of results) {
-          if (r.status === "success" && r.lat && r.lon) {
-            markers.push({
-              ip: r.query,
-              lat: r.lat,
-              lng: r.lon,
-              country: r.country,
-              countryCode: r.countryCode,
-            });
-          }
+        const r = await geoRes.json();
+        if (r.status === "success" && r.lat && r.lon) {
+          markers.push({
+            ip: r.query,
+            lat: r.lat,
+            lng: r.lon,
+            country: r.country,
+            countryCode: r.countryCode,
+          });
         }
       }
     } catch {
       // Continue with what we have
     }
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   // 3. Aggregate by country
