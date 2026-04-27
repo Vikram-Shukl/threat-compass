@@ -59,8 +59,6 @@ async function fetchThreatGeoData(): Promise<{
   const ips = Array.from(ipSet).slice(0, 15); // Free tier: 45 req/min
   if (ips.length === 0) return { markers: [], byCountry: [], total: 0 };
 
-  // 2. Geolocate via ipapi.co with 200ms delay
-  const markers: GeoIp[] = [];
   const ipsToCheck = ips.slice(0, 10);
 
   // 2. Geolocate via our edge function proxy (avoids browser CORS/rate-limit)
