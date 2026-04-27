@@ -35,7 +35,18 @@ async function fetchCves({
     resultsPerPage: String(RESULTS_PER_PAGE),
     startIndex: String(startIndex),
   });
-  if (keyword) params.set("keywordSearch", keyword);
+  if (keyword) {
+    params.set("keywordSearch", keyword);
+  } else {
+    // Show latest CVEs first when no search active (last 120 days)
+    const pubStartDate =
+      new Date(Date.now() - 120 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split(".")[0] + "000";
+    const pubEndDate = new Date().toISOString().split(".")[0] + "000";
+    params.set("pubStartDate", pubStartDate);
+    params.set("pubEndDate", pubEndDate);
+  }
 
   const res = await fetch(
     `https://services.nvd.nist.gov/rest/json/cves/2.0?${params}`
@@ -104,8 +115,8 @@ export default function CveExplorer() {
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ["cve-explorer", submittedSearch, startIndex],
     queryFn: () => fetchCves({ keyword: submittedSearch, startIndex }),
-    staleTime: 12 * 60 * 60 * 1000,
-    refetchInterval: 12 * 60 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    refetchInterval: 30 * 60 * 1000,
     placeholderData: (prev) => prev,
   });
 
