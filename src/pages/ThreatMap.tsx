@@ -61,24 +61,25 @@ async function fetchThreatGeoData(): Promise<{
 
   // 2. Geolocate via ipapi.co with 200ms delay
   const markers: GeoIp[] = [];
-  const ipsToCheck = ips.slice(0, 15);
-  for (const ip of ipsToCheck) {
-    try {
-      const res = await fetch(`https://ipapi.co/${ip}/json/`);
-      const r = await res.json();
-      if (r.latitude && r.longitude) {
-        markers.push({
-          ip: ip,
-          lat: r.latitude,
-          lng: r.longitude,
-          country: r.country_name,
-          countryCode: r.country_code,
-        });
+  const ipsToCheck = ips.slice(0, 10);
+
+  // 2. Geolocate via our edge function proxy (avoids browser CORS/rate-limit)
+  let markers: GeoIp[] = [];
+  try {
+    const res = await fetch(
+      "https://ddskbvtdmyxahxzgdfvo.supabase.co/functions/v1/ip-geo-proxy",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ips: ipsToCheck }),
       }
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    } catch {
-      continue;
+    );
+    const json = await res.json();
+    if (Array.isArray(json.results)) {
+      markers = json.results;
     }
+  } catch {
+    markers = [];
   }
 
   // 3. Aggregate by country
