@@ -40,8 +40,8 @@ async function fetchCves({
   } else {
     const now = new Date();
     const past = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
-    params.set("pubStartDate", past.toISOString().replace(/\.\d{3}Z$/, ".000"));
-    params.set("pubEndDate", now.toISOString().replace(/\.\d{3}Z$/, ".000"));
+    params.set("pubStartDate", past.toISOString().slice(0, 19) + ".000");
+    params.set("pubEndDate", now.toISOString().slice(0, 19) + ".000");
   }
 
   const res = await fetch(
