@@ -59,29 +59,26 @@ async function fetchThreatGeoData(): Promise<{
   const ips = Array.from(ipSet).slice(0, 15); // Free tier: 45 req/min
   if (ips.length === 0) return { markers: [], byCountry: [], total: 0 };
 
-  // 2. Geolocate via ip-api.com free single endpoint with 100ms delay
+  // 2. Geolocate via ipapi.co with 200ms delay
   const markers: GeoIp[] = [];
-  for (const ip of ips) {
+  const ipsToCheck = ips.slice(0, 15);
+  for (const ip of ipsToCheck) {
     try {
-      const geoRes = await fetch(
-        `https://ip-api.com/json/${ip}?fields=query,lat,lon,country,countryCode,status`
-      );
-      if (geoRes.ok) {
-        const r = await geoRes.json();
-        if (r.status === "success" && r.lat && r.lon) {
-          markers.push({
-            ip: r.query,
-            lat: r.lat,
-            lng: r.lon,
-            country: r.country,
-            countryCode: r.countryCode,
-          });
-        }
+      const res = await fetch(`https://ipapi.co/${ip}/json/`);
+      const r = await res.json();
+      if (r.latitude && r.longitude) {
+        markers.push({
+          ip: ip,
+          lat: r.latitude,
+          lng: r.longitude,
+          country: r.country_name,
+          countryCode: r.country_code,
+        });
       }
+      await new Promise((resolve) => setTimeout(resolve, 200));
     } catch {
-      // Continue with what we have
+      continue;
     }
-    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   // 3. Aggregate by country
