@@ -38,14 +38,10 @@ async function fetchCves({
   if (keyword) {
     params.set("keywordSearch", keyword);
   } else {
-    // Show latest CVEs first when no search active (last 120 days)
-    const pubStartDate =
-      new Date(Date.now() - 120 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split(".")[0] + "000";
-    const pubEndDate = new Date().toISOString().split(".")[0] + "000";
-    params.set("pubStartDate", pubStartDate);
-    params.set("pubEndDate", pubEndDate);
+    const now = new Date();
+    const past = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000);
+    params.set("pubStartDate", past.toISOString().replace(/\.\d{3}Z$/, ".000"));
+    params.set("pubEndDate", now.toISOString().replace(/\.\d{3}Z$/, ".000"));
   }
 
   const res = await fetch(
